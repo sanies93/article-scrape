@@ -5,7 +5,7 @@ var cheerio = require('cheerio');
 var mongoose = require('mongoose');
 var db = require('./models');
 
-var PORT = 3030;
+var PORT = 3033;
 
 // Initialize Express
 var app = express();
@@ -36,7 +36,8 @@ app.get('/scrape', function (req, res) {
                 .children('a')
                 .text();
             result.summary = $(this)
-                .children('a')
+                // .children('a')
+                // .find('p.summary')
                 .text();
             result.url = $(this)
                 .children('a')
@@ -91,6 +92,18 @@ app.post('/articles/:id', function (req, res) {
         .catch(function (err) {
             res.json(err);
         });
+});
+
+app.get('/delete', function(req, res) {
+    db.Article.remove({}, function(err) {
+        if (!err) {
+                message.type = 'notification!';
+                res.json(dbArticle);
+        }
+        else {
+                message.type = 'error';
+        }
+    });
 });
 
 // Start server
